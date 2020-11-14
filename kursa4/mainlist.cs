@@ -21,16 +21,14 @@ namespace kursa4
         internal static bool root; /*ADMIN RIGHTS DETECTING BOOL*/
         internal static bool status = false; /*IS USER LOGGED IN?*/
         internal static string selectedItem; /*variable which contains ID of chosen item in search itembox in string*/
+        internal static List<string> itemList = new List<string> { };
 
         public mainlist()
         {
-            //CREATING LOGIN FORM
 
             InitializeComponent();
             login focusform = new login();
             focusform.ShowDialog();
-
-            //CONNECTING DATABASE
 
             collectAll();
         }
@@ -42,21 +40,7 @@ namespace kursa4
                 login focusform = new login();
                 focusform.ShowDialog();
             }
-            else
-                /*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*/
-                //RETURN TO LOGIN FORM
-
-                /*if (focusform.Visible == false)
-                {*/
-                //    focusform.ShowDialog();
-                /*} else
-                {
-                    focusform.BringToFront();
-                }*/
-                /*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*//*QUESTIONABLE SHIT*/
             {
-                /*SEARCH*//*SEARCH*//*SEARCH*//*SEARCH*//*SEARCH*//*SEARCH*//*SEARCH*//*SEARCH*//*SEARCH*/
-
                 List<string> specs = new List<string>
                 {
                     "year",
@@ -119,6 +103,7 @@ namespace kursa4
             while (rdr.Read())
             {
                 sebox.Items.Add("ID[" + rdr["id"] + "] Model: " + rdr["model"] + ", Firm: " + rdr["firm"] + ", Year: " + rdr["year"] + ", Country: " + rdr["country"] + ", Form: " + rdr["form"] + ", Material: " + rdr["material"] + ", Num: " + rdr["num"] + ".");
+                itemList.Add(Convert.ToString(rdr["id"]));
             }
         }
 
@@ -136,7 +121,6 @@ namespace kursa4
                     deleteSelectedItem();
                     sebox.Items.Clear();
                     collectAll();
-                    //sebox.SelectedItem = 1; // selectedItem;
                 }
                 else
                 {
@@ -147,7 +131,7 @@ namespace kursa4
 
         private void deleteSelectedItem()
         {
-            getID(sebox.Items, sebox.SelectedIndex);
+            getID(sebox.SelectedIndex);
             if (selectedItem != null)
             {
                 using var connectionDB = new SQLiteConnection(@"Data Source=C:\guitars.sqlite;Version=3;");
@@ -177,25 +161,9 @@ namespace kursa4
                 cmd.ExecuteNonQuery();
             }
         }
-        private void getID(ListBox.ObjectCollection itemBoxList, int selectedID)
+        private void getID(int selectedID)
         {
-            string t = "";
-            try
-            {
-                t = (string)itemBoxList[selectedID];
-                int pFrom = t.IndexOf("[") + "[".Length;
-                int pTo = t.LastIndexOf("]");
-
-                if (t.Substring(pFrom, pTo - pFrom) != null)
-                {
-                    mainlist.selectedItem = t.Substring(pFrom, pTo - pFrom);
-                }
-                return;
-            } catch 
-            {
-                MessageBox.Show("Выберите образец в списке");
-                return;
-            }
+            selectedItem = itemList[selectedID];
         }
 
         private void buttonShowAll_Click(object sender, EventArgs e)
@@ -222,7 +190,7 @@ namespace kursa4
             }
             else
             {
-                getID(sebox.Items, sebox.SelectedIndex);
+                getID(sebox.SelectedIndex);
                 if (selectedItem != null)
                 {
                     showObr showForm = new showObr();

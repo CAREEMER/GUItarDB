@@ -59,8 +59,6 @@ namespace kursa4
             {
                 newFilePath = "NaN";
             }
-            //label2.Visible = true;
-            //label2.Text = filePath;
             SQLiteConnection connectionDB;
             connectionDB = new SQLiteConnection(@"Data Source=C:\guitars.sqlite;Version=3;");
             connectionDB.Open();

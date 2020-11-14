@@ -15,8 +15,6 @@ namespace kursa4
     {
         public showObr()
         {
-            //InitializeComponent();
-
             using var connectionDB = new SQLiteConnection(@"Data Source=C:\guitars.sqlite;Version=3;");
             connectionDB.Open();
             using var cmd = new SQLiteCommand(connectionDB);
@@ -34,7 +32,6 @@ namespace kursa4
                     catch (Exception)
                     {
                         MessageBox.Show("У данного образца нет изображения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        //pictureBox1.Visible = false;
                     }
                     if (Convert.ToString(rdr["pic"]) == "")
                     {
