@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
-using System.Collections.Specialized;
-using System.Collections;
 using System.IO;
-using System.Diagnostics.Tracing;
 
 namespace kursa4
 {
@@ -66,9 +57,10 @@ namespace kursa4
 
                     while (reader.Read())
                     {
-                        sebox.Items.Add("ID[" + reader["id"] + "] Model: " + reader["model"] + ", Firm: " + reader["firm"] + ", Year: " + reader["year"] + ", Country: " + reader["country"] + ", Form: " + reader["form"] + ", Material: " + reader["material"] + ", Num: " + reader["num"] + ".");
+                        sebox.Items.Add($"ID[{reader["id"]}] Model: {reader["model"]}, Firm: {reader["firm"]}, Year: {reader["year"]}, Country: {reader["country"]}, Form: {reader["form"]}, Material: {reader["material"]}, Num: {reader["num"]}.");
                     }
                 }
+                connectionDB.Close();
             }
         }
 
@@ -102,9 +94,10 @@ namespace kursa4
 
             while (rdr.Read())
             {
-                sebox.Items.Add("ID[" + rdr["id"] + "] Model: " + rdr["model"] + ", Firm: " + rdr["firm"] + ", Year: " + rdr["year"] + ", Country: " + rdr["country"] + ", Form: " + rdr["form"] + ", Material: " + rdr["material"] + ", Num: " + rdr["num"] + ".");
+                sebox.Items.Add($"ID[{rdr["id"]}] Model: {rdr["model"]}, Firm: {rdr["firm"]}, Year: {rdr["year"]}, Country: {rdr["country"]}, Form: {rdr["form"]}, Material: {rdr["material"]}, Num: {rdr["num"]}.");
                 itemList.Add(Convert.ToString(rdr["id"]));
             }
+            connectionDB.Close();
         }
 
         private void buttonDeleteObr_Click(object sender, EventArgs e)
@@ -138,7 +131,7 @@ namespace kursa4
                 connectionDB.Open();
                 using var cmd = new SQLiteCommand(connectionDB);
 
-                using var cmdr = new SQLiteCommand("SELECT * FROM guitars WHERE ID = " + selectedItem + "", connectionDB);
+                using var cmdr = new SQLiteCommand($"SELECT * FROM guitars WHERE ID = {selectedItem}", connectionDB);
                 using SQLiteDataReader rdr = cmdr.ExecuteReader();
                 string fn = "";
                 while (rdr.Read())
@@ -157,13 +150,20 @@ namespace kursa4
                     MessageBox.Show(ex.Message);
                 }
 
-                cmd.CommandText = @"DELETE FROM guitars WHERE ID = " + selectedItem + "";
+                cmd.CommandText = $"DELETE FROM guitars WHERE ID = {selectedItem}";
                 cmd.ExecuteNonQuery();
+                connectionDB.Close();
             }
         }
         private void getID(int selectedID)
         {
-            selectedItem = itemList[selectedID];
+            if (selectedID != -1)
+            {
+                selectedItem = itemList[selectedID];
+            } else
+            {
+                selectedItem = null;
+            }
         }
 
         private void buttonShowAll_Click(object sender, EventArgs e)
@@ -181,8 +181,7 @@ namespace kursa4
         }
 
         private void buttonShowObr_Click(object sender, EventArgs e)
-        {
-            
+        {   
             if (status == false)
             {
                 login focusform = new login();
@@ -196,6 +195,20 @@ namespace kursa4
                     showObr showForm = new showObr();
                     showForm.Show();
                 }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (status == false)
+            {
+                login focusform = new login();
+                focusform.ShowDialog();
+            }
+            else
+            {
+                settings focusforum = new settings();
+                focusforum.ShowDialog();
             }
         }
     }

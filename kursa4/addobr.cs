@@ -1,15 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
-using System.Configuration;
 
 namespace kursa4
 {
@@ -49,33 +41,39 @@ namespace kursa4
             string newFilePath = "";
             if (addobr.filePath.Contains(".png"))
             {
-                newFilePath = @"c:\\GUIdbPics\" + DateTime.Now.ToString("HHmmss") + textBoxModel.Text + ".png";
+                newFilePath = @$"c:\\GUIdbPics\{DateTime.Now.ToString("HHmmss") + textBoxModel.Text}.png";
             }
             else if (addobr.filePath.Contains(".jpg"))
             {
-                newFilePath = @"c:\\GUIdbPics\" + DateTime.Now.ToString("HHmmss") + textBoxModel.Text + ".jpg";
+                newFilePath = @$"c:\\GUIdbPics\{DateTime.Now.ToString("HHmmss") + textBoxModel.Text}.jpg";
             }
             else if (addobr.filePath == "")
             {
                 newFilePath = "NaN";
             }
-            SQLiteConnection connectionDB;
-            connectionDB = new SQLiteConnection(@"Data Source=C:\guitars.sqlite;Version=3;");
-            connectionDB.Open();
-
-            using var cmd = new SQLiteCommand(connectionDB);
-
             try
             {
-                cmd.CommandText = "INSERT INTO guitars(year, country, firm, model, form, material, num, pic) VALUES(" + Convert.ToInt32(textBoxYear.Text) + ", '" + textBoxCountry.Text.Replace('[', '{').Replace(']', '}') + "', '" + textBoxFirm.Text.Replace('[', '{').Replace(']', '}') + "', '" + textBoxModel.Text.Replace('[', '{').Replace(']', '}') + "', '" + textBoxForm.Text.Replace('[', '{').Replace(']', '}') + "', '" + textBoxMaterial.Text.Replace('[', '{').Replace(']', '}') + "', " + Convert.ToInt32(textBoxNum.Text) + ", '" + newFilePath + "')";
-                cmd.ExecuteNonQuery();
-                statusObj = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+                SQLiteConnection connectionDB;
+                connectionDB = new SQLiteConnection(@"Data Source=C:\guitars.sqlite;Version=3;");
+                connectionDB.Open();
 
+                using var cmd = new SQLiteCommand(connectionDB);
+
+                try
+                {
+                    cmd.CommandText = $"INSERT INTO guitars(year, country, firm, model, form, material, num, pic) VALUES({Convert.ToInt32(textBoxYear.Text)}, '{textBoxCountry.Text.Replace('[', '{').Replace(']', '}')}', '{textBoxFirm.Text.Replace('[', '{').Replace(']', '}')}', '{textBoxModel.Text.Replace('[', '{').Replace(']', '}')}', '{textBoxForm.Text.Replace('[', '{').Replace(']', '}')}', '{textBoxMaterial.Text.Replace('[', '{').Replace(']', '}')}', {Convert.ToInt32(textBoxNum.Text)}, '{newFilePath}')";
+                    cmd.ExecuteNonQuery();
+                    statusObj = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                connectionDB.Close();
+            } catch
+            {
+                MessageBox.Show("База данных была повреждена или удалена, пожалуйста, перезагрузите программу!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             if (filePath != "")
             {
                 if (Directory.Exists(@"c:\\GUIdbPics") == false)

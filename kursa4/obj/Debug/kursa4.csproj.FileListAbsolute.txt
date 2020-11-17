@@ -43,4 +43,3 @@ C:\Users\MNTHL\source\repos\kursa4\kursa4\bin\Debug\Installer.exe
 C:\Users\MNTHL\source\repos\kursa4\kursa4\bin\Debug\Installer.pdb
 C:\Users\MNTHL\source\repos\kursa4\kursa4\obj\Debug\kursa4.addobr.resources
 C:\Users\MNTHL\source\repos\kursa4\kursa4\obj\Debug\kursa4.showObr.resources
-C:\Users\MNTHL\source\repos\kursa4\kursa4\obj\Debug\kursa4.csprojAssemblyReference.cache

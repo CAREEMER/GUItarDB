@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SQLite;
 
 namespace kursa4
 {
@@ -19,14 +13,27 @@ namespace kursa4
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (guestcheckbox.Checked == true)
+            string bdlog = "";
+            string bdpwd = "";
+            using var connectionDB = new SQLiteConnection(@"Data Source=C:\guitars.sqlite;Version=3;");
+            connectionDB.Open();
+
+            using var cmdr = new SQLiteCommand($"SELECT * FROM admin", connectionDB);
+            using SQLiteDataReader rdr = cmdr.ExecuteReader();
+            while (rdr.Read())
+            {
+                bdlog = (string)rdr["login"];
+                bdpwd = (string)rdr["password"];
+            }
+            connectionDB.Close();
+                if (guestcheckbox.Checked == true)
             {
                 //LOGIN AS A GUEST
 
                 mainlist.root = false;
                 mainlist.status = true;
                 this.Close();
-            } else if (textBox1.Text == "admin" && textBox2.Text == "password")
+            } else if (textBox1.Text == bdlog && textBox2.Text == bdpwd)
             {
                 //LOGIN AS AN ADMIN
 
